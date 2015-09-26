@@ -2,16 +2,19 @@ package com.company;
 
 import com.company.exceptions.LTONotMountedException;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import static com.company.view.ConsoleView.*;
 
 public class LTOCheck {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
         if (args.length != 2) {
-            System.out.println("Enter path to scan and path to EDL. ltoumom!");
+            errorArgsOutput();
             System.exit(0);
         }
 
@@ -21,9 +24,7 @@ public class LTOCheck {
 
         Input input = new Input();
 
-        System.out.println();
-        System.out.println("Starting with " + EDL);
-        System.out.println();
+        startOutput(EDL);
 
         ArrayList<String> fromEDL = input.getInput(EDL);
 
@@ -31,10 +32,10 @@ public class LTOCheck {
 
         ArrayList<String> fromLTO = null;
         try {
-            fromLTO = ltoScan.getFromLTO(PATH);
+            fromLTO = ltoScan.getFromLTO();
         } catch (LTONotMountedException e) {
             e.printStackTrace();
-            System.out.println("LTO not mount! Exit");
+            errorOutput();
             System.exit(-1);
         }
 
