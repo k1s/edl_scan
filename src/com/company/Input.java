@@ -2,6 +2,8 @@ package com.company;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class Input {
 
@@ -34,6 +36,8 @@ public class Input {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Collections.sort(strOut);
 
         return strOut;
 
