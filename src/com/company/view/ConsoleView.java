@@ -1,6 +1,7 @@
 package com.company.view;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ConsoleView {
 
@@ -10,7 +11,7 @@ public class ConsoleView {
         System.out.println();
     }
 
-    public static void fromEDLOutput(final ArrayList<String> fromEDL) {
+    public static void fromEDLOutput(final List<String> fromEDL) {
         System.out.println();
         System.out.println("From EDL: " + fromEDL);
         System.out.println();
