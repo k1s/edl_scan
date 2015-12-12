@@ -1,21 +1,21 @@
 package com.company;
 
-import com.company.exceptions.LTONotMountedException;
+import com.company.exceptions.NotMountedException;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Scan {
 
-    public ArrayList<String> getFromSource(final ArrayList<String> fromEDL, final String source) throws LTONotMountedException {
+    public ArrayList<String> getFromSource(final ArrayList<String> fromEDL, final String source) throws NotMountedException {
 
         File root = new File(source);
-        if (!root.exists())
-            mountLTO();
+        if (root.list().length == 0)
+//            mountLTO();
+        throw new NotMountedException();
 
         ArrayList<String> filesWalk = new ArrayList<String>();
 
@@ -47,13 +47,13 @@ public class Scan {
 
     }
 
-    public ArrayList<String> checkScan(final ArrayList<String> fromEDL, final String source) throws LTONotMountedException {
+    public ArrayList<String> checkScan(final ArrayList<String> fromEDL, final String source) throws NotMountedException {
 
         File root = new File(source);
         File[] list = root.listFiles();
         if (list != null)
             if (list.length == 0)
-                throw new LTONotMountedException();
+                throw new NotMountedException();
         ArrayList<String> strings = new ArrayList<String>();
 
         return checkScanWalk(fromEDL, source, strings);
