@@ -1,5 +1,8 @@
 package com.company.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ConsoleView {
 
     public static void startOutput(final String EDL) {
@@ -8,12 +11,20 @@ public class ConsoleView {
         System.out.println();
     }
 
-    public static void errorOutput() {
-        System.out.println("LTO not mount at /LTO! You need use \"ltfs -o eject /LTO\" after cartrige injecting. Exit");
+    public static void fromEDLOutput(final List<String> fromEDL) {
+        System.out.println();
+        System.out.println("From EDL: " + fromEDL);
+        System.out.println();
     }
 
-    public static void errorArgsOutput() {
-        System.out.println("Enter path to scan and path to EDL");
+    public static void matched(final ArrayList<String> fromSource) {
+        System.out.println();
+        System.out.println("Matched: " + fromSource);
+        System.out.println();
+    }
+
+    public static void errorOutput() {
+        System.out.println("LTO not mount at /LTO! You need use \"ltfs -o eject /LTO\" after cartrige injecting. Exit");
     }
 
 }
