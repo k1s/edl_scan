@@ -1,4 +1,4 @@
-package com.company;
+package com.company.core;
 
 import com.company.exceptions.NotMountedException;
 
@@ -11,16 +11,11 @@ import java.util.stream.Collectors;
 public class Scan {
 
     public ArrayList<String> getFromSource(final ArrayList<String> fromEDL, final String source) throws NotMountedException {
-
         File root = new File(source);
         if (root.list().length == 0)
-//            mountLTO();
-        throw new NotMountedException();
-
+            throw new NotMountedException();
         ArrayList<String> filesWalk = new ArrayList<String>();
-
         return customWalk(fromEDL, source, filesWalk);
-
     }
 
     public ArrayList<String> customWalk(final ArrayList<String> fromEDL, final String source, final ArrayList<String> filesWalk) {
@@ -31,7 +26,6 @@ public class Scan {
         if (list != null) {
             files = Arrays.asList(list);
         }
-
         files.parallelStream().filter(f -> !f.getAbsolutePath().contains(".DS_Store")).forEach(f -> {
             String fileName = String.valueOf(f.getAbsoluteFile());
             if ( f.isDirectory() ) {
@@ -83,15 +77,6 @@ public class Scan {
         });
 
         return strings;
-    }
-
-    private void mountLTO() {
-        ProcessBuilder mount = new ProcessBuilder("ltfs", "-o", "eject", "LTO");
-        try {
-            Process mounter = mount.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void checkName(final String fileName, final ArrayList<String> strings, final ArrayList<String> fromEDL) {
