@@ -1,6 +1,7 @@
 package com.company.core;
 
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 
 public class EDL {
@@ -13,6 +14,7 @@ public class EDL {
     private static final int REEL_NAME_FROM_SOURCE_FILE_POSITION = 3;
 
     public ArrayList<String> getInput(final String EDL, final boolean shortReelNames) {
+
         Set<String> strOut = new HashSet<>();
         try (BufferedReader bufRead = new BufferedReader(new FileReader(EDL))) {
             String strIn;
