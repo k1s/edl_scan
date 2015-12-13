@@ -40,7 +40,9 @@ public class EDL {
     private void checkString(final String forCheck, final String matcher, final int position, final Set<String> set) {
         if (forCheck.length() > 1 && forCheck.matches(matcher)) {
             String[] strDev = forCheck.split("\\s");
-            set.add(strDev[position]);
+            int validPositionFromLine = strDev.length-1 < position ? strDev.length-1 : position;
+            if (strDev[validPositionFromLine] != null)
+                set.add(strDev[validPositionFromLine]);
         }
     }
 }
