@@ -72,7 +72,8 @@ public class Scan {
                 checkScanWalk(fromEDL, f.getAbsolutePath(), strings);
             }
             if (f.isFile()) {
-                checkName(fileName, strings, fromEDL);
+                //TODO avoid check arri
+//                checkName(fileName, strings, fromEDL);
             }
         });
 
