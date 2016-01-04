@@ -37,6 +37,7 @@ public class EDL {
     }
 
     private void extractFromLines(Pattern pattern) {
+        System.out.println(pattern.toString());
         this.lines.forEach(line -> {
             Matcher matcher = pattern.matcher(line);
             if (matcher.find()) {
