@@ -58,9 +58,6 @@ public class ScanTest {
                 .sorted()
                 .collect(Collectors.toList());
         assertEquals(expectedStringsWithoutFiles, stringsFromPaths);
-
-
-
     }
 
     @Test
