@@ -1,5 +1,6 @@
 package com.company.core;
 
+import com.company.DRY.Assert;
 import com.company.exceptions.NotMountedException;
 
 import java.io.*;
@@ -15,6 +16,7 @@ public class Scan {
     private final Path source;
 
     public Scan(List<String> fromEDL, Path source) {
+        Assert.requirePath(source);
         this.fromEDL = fromEDL.stream()
                 .map(String::toLowerCase)
                 .collect(Collectors.toList());
@@ -22,6 +24,8 @@ public class Scan {
     }
 
     public List<Path> getFromSource(final boolean checkFiles) throws NotMountedException {
+        if (this.fromEDL.isEmpty())
+            return new ArrayList<>();
         File root = new File(String.valueOf(source));
         if (root.list().length == 0)
             throw new NotMountedException();
@@ -30,7 +34,6 @@ public class Scan {
     }
 
     private List<Path> customWalk(final Path source, final Set<Path> filesWalk, final boolean checkFiles) {
-
         try {
             Files.list(source)
                     .parallel()
@@ -47,9 +50,7 @@ public class Scan {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return new ArrayList<>(filesWalk);
-
     }
 
     private void checkDirName(final Path fileName, final Set<Path> filesWalk) {
