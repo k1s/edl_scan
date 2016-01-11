@@ -6,9 +6,9 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class EDL {
 
@@ -37,38 +37,23 @@ public class EDL {
         patterns.add(sourceFiles);
         patterns.add(clipNames);
 
-        List<Callable<List<String>>> callables = new ArrayList<>();
-        patterns.forEach(p -> callables.add(new Extractor(p)));
+        List<String> fromLines = patterns.parallelStream()
+                .flatMap(pattern -> extractFromLines(pattern).stream())
+                .distinct()
+                .collect(Collectors.toList());
 
-        ExecutorService executorService = Executors.newCachedThreadPool();
-        List<Future<List<String>>> future = executorService.invokeAll(callables);
-
-        Set<String> futures = new HashSet<>();
-
-        for (Future<List<String>> f : future) {
-            futures.addAll(f.get());
-        }
-
-        return new ArrayList<>(futures);
+        return fromLines;
     }
 
-    private class Extractor implements Callable {
-
-        final private Pattern pattern;
-        public Extractor(Pattern pattern) {
-            this.pattern = pattern;
-        }
-
-        @Override
-        public  List<String> call() throws Exception {
-            List<String> strOut = new ArrayList<>();
-            EDL.this.lines.forEach(line -> {
-                Matcher matcher = pattern.matcher(line);
-                if (matcher.find()) {
-                    strOut.add(matcher.group().trim());
-                }
-            });
-            return new ArrayList<>(strOut);
-        }
+    private List<String> extractFromLines(Pattern pattern) {
+        List<String> strOut = new ArrayList<>();
+        EDL.this.lines.forEach(line -> {
+            Matcher matcher = pattern.matcher(line);
+            if (matcher.find()) {
+                strOut.add(matcher.group().trim());
+            }
+        });
+        return new ArrayList<>(strOut);
     }
+
 }
