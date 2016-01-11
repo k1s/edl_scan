@@ -16,11 +16,10 @@ public class EDL {
     private final String REEL_NAME_FROM_SOURCE_FILE = "(?<=SOURCE FILE:)(.*)";
     private final String REEL_NAME_FROM_CLIP_NAME = "(?<=CLIP NAME:)(.*)";
 
-    private volatile Set<String> strOut = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private List<String> lines;
 
     public EDL(final Path EDL) {
-        Assert.require(path -> Files.exists(path), EDL, "Path to EDL does not exist");
+        Assert.requirePath(EDL);
         try {
             this.lines = Files.readAllLines(EDL);
         } catch (IOException e) {
@@ -28,34 +27,48 @@ public class EDL {
         }
     }
 
-    public List<String> getInput(final boolean shortReelNames) {
+    public List<String> getInput(final boolean shortReelNames) throws Exception{
         Pattern reelNames = Pattern.compile(SHORT_REEL_NAME);
         Pattern sourceFiles = Pattern.compile(REEL_NAME_FROM_SOURCE_FILE);
         Pattern clipNames = Pattern.compile(REEL_NAME_FROM_CLIP_NAME);
-        ExecutorService executorService = Executors.newCachedThreadPool();
+        List<Pattern> patterns = new ArrayList<>();
         if (shortReelNames)
-            executorService.execute(new Thread(() -> extractFromLines(reelNames)));
-        executorService.execute(new Thread(() -> extractFromLines(clipNames)));
-        executorService.execute(new Thread(() -> extractFromLines(sourceFiles)));
-        executorService.shutdown();
-        try {
-            executorService.awaitTermination(1, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            patterns.add(reelNames);
+        patterns.add(sourceFiles);
+        patterns.add(clipNames);
+
+        List<Callable<List<String>>> callables = new ArrayList<>();
+        patterns.forEach(p -> callables.add(new Extractor(p)));
+
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        List<Future<List<String>>> future = executorService.invokeAll(callables);
+
+        Set<String> futures = new HashSet<>();
+
+        for (Future<List<String>> f : future) {
+            futures.addAll(f.get());
         }
-        return outStrings();
+
+        return new ArrayList<>(futures);
     }
 
-    private void extractFromLines(Pattern pattern) {
-                this.lines.forEach(line -> {
-                    Matcher matcher = pattern.matcher(line);
-                    if (matcher.find()) {
-                        this.strOut.add(matcher.group().trim());
-                    }
-                });
-    }
+    private class Extractor implements Callable {
 
-    private List<String> outStrings() {
-        return new ArrayList<>(this.strOut);
+        final private Pattern pattern;
+        public Extractor(Pattern pattern) {
+            this.pattern = pattern;
+        }
+
+        @Override
+        public  List<String> call() throws Exception {
+            List<String> strOut = new ArrayList<>();
+            EDL.this.lines.forEach(line -> {
+                Matcher matcher = pattern.matcher(line);
+                if (matcher.find()) {
+                    strOut.add(matcher.group().trim());
+                }
+            });
+            return new ArrayList<>(strOut);
+        }
     }
 }
