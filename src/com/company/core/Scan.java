@@ -13,24 +13,25 @@ import java.util.stream.Collectors;
 public class Scan {
 
     private final List<String> fromEDL;
-    private final Path source;
 
-    public Scan(List<String> fromEDL, Path source) {
-        Assert.requirePath(source);
+    public Scan(List<String> fromEDL) {
+        Assert.require(!fromEDL.isEmpty());
         this.fromEDL = fromEDL.stream()
                 .map(String::toLowerCase)
                 .collect(Collectors.toList());
-        this.source = source;
     }
 
-    public List<Path> getFromSource(final boolean checkFiles) throws NotMountedException {
-        if (this.fromEDL.isEmpty())
-            return new ArrayList<>();
+    public List<Path> getFromSource(final Path source, final boolean checkFiles) throws NotMountedException {
+        checkSource(source);
+        Set<Path> filesWalk = Collections.newSetFromMap(new ConcurrentHashMap<>());
+        return customWalk(source, filesWalk, checkFiles);
+    }
+
+    private void checkSource(final Path source) throws NotMountedException {
+        Assert.requirePath(source);
         File root = new File(String.valueOf(source));
         if (root.list().length == 0)
             throw new NotMountedException();
-        Set<Path> filesWalk = Collections.newSetFromMap(new ConcurrentHashMap<>());
-        return customWalk(source, filesWalk, checkFiles);
     }
 
     private List<Path> customWalk(final Path source, final Set<Path> filesWalk, final boolean checkFiles) {
@@ -54,17 +55,21 @@ public class Scan {
     }
 
     private void checkDirName(final Path fileName, final Set<Path> filesWalk) {
-        fromEDL.forEach(str -> {
-            if (fileName.getFileName().toString().toLowerCase().contains(str))
+        this.fromEDL.forEach(str -> {
+            if (pathToLowerCase(fileName).contains(str))
                 filesWalk.add(fileName);
         });
     }
 
     private void checkFileName(final Path fileName, final Set<Path> filesWalk, final boolean checkFiles) {
-        if (fromEDL.contains(fileName.getFileName().toString().toLowerCase()))
+        if (this.fromEDL.contains(pathToLowerCase(fileName)))
             filesWalk.add(fileName);
         if (checkFiles)
             checkDirName(fileName, filesWalk);
+    }
+
+    private String pathToLowerCase(final Path path) {
+        return path.getFileName().toString().toLowerCase();
     }
 
 }
