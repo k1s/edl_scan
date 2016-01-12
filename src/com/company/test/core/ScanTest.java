@@ -50,8 +50,8 @@ public class ScanTest {
         expectedStringsWithoutFiles.addAll(Arrays.asList(expected));
         Collections.sort(expectedStringsWithoutFiles);
         boolean checkFiles = false;
-        Scan scan = new Scan(edl, Paths.get(correctFilePath));
-        List<Path> paths = scan.getFromSource(checkFiles);
+        Scan scan = new Scan(edl);
+        List<Path> paths = scan.getFromSource(Paths.get(correctFilePath), checkFiles);
         List<String> stringsFromPaths = paths.stream()
                 .map(Path::getFileName)
                 .map(Path::toString)
@@ -76,8 +76,8 @@ public class ScanTest {
         expectedStringsWithFiles.addAll(Arrays.asList(expectedWith));
         Collections.sort(expectedStringsWithFiles);
         boolean checkFiles = true;
-        Scan scan = new Scan(edl, Paths.get(correctFilePath));
-        List<Path> pathsWithFiles = scan.getFromSource(checkFiles);
+        Scan scan = new Scan(edl);
+        List<Path> pathsWithFiles = scan.getFromSource(Paths.get(correctFilePath), checkFiles);
         List<String> stringsFromPathsWithFiles = pathsWithFiles.stream()
                 .map(Path::getFileName)
                 .map(Path::toString)
