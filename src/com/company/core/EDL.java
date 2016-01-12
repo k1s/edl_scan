@@ -16,18 +16,31 @@ public class EDL {
     private final String REEL_NAME_FROM_SOURCE_FILE = "(?<=SOURCE FILE:)(.*)";
     private final String REEL_NAME_FROM_CLIP_NAME = "(?<=CLIP NAME:)(.*)";
 
-    private List<String> lines;
-
+    private Path EDL;
     public EDL(final Path EDL) {
         Assert.requirePath(EDL);
-        try {
-            this.lines = Files.readAllLines(EDL);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.EDL = EDL;
     }
 
     public List<String> getInput(final boolean shortReelNames) throws Exception{
+        List<String> linesFromEDL = getLinesFromEDL(this.EDL);
+        if (linesFromEDL.isEmpty())
+            return new ArrayList<>();
+        else
+            return extractFromEDL(getPatterns(shortReelNames), linesFromEDL);
+    }
+
+    private List<String> getLinesFromEDL(Path edl) {
+        List<String> lines = new ArrayList<>();
+        try {
+            lines = Files.readAllLines(edl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return lines;
+    }
+
+    private List<Pattern> getPatterns(final boolean shortReelNames) {
         Pattern reelNames = Pattern.compile(SHORT_REEL_NAME);
         Pattern sourceFiles = Pattern.compile(REEL_NAME_FROM_SOURCE_FILE);
         Pattern clipNames = Pattern.compile(REEL_NAME_FROM_CLIP_NAME);
@@ -36,18 +49,19 @@ public class EDL {
             patterns.add(reelNames);
         patterns.add(sourceFiles);
         patterns.add(clipNames);
-
-        List<String> fromLines = patterns.parallelStream()
-                .flatMap(pattern -> extractFromLines(pattern).stream())
-                .distinct()
-                .collect(Collectors.toList());
-
-        return fromLines;
+        return patterns;
     }
 
-    private List<String> extractFromLines(Pattern pattern) {
+    private List<String> extractFromEDL(List<Pattern> patterns, List<String> lines) {
+        return patterns.parallelStream()
+                .flatMap(pattern -> extractFromLines(pattern, lines).stream())
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private List<String> extractFromLines(Pattern pattern, List<String> lines) {
         List<String> strOut = new ArrayList<>();
-        EDL.this.lines.forEach(line -> {
+        lines.forEach(line -> {
             Matcher matcher = pattern.matcher(line);
             if (matcher.find()) {
                 strOut.add(matcher.group().trim());
