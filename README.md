@@ -1,2 +1,2 @@
-# lto_scan
-Simple LTO scan from EDL
+# edl_scan
+Simple scan from EDL
