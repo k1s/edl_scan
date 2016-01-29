@@ -1,6 +1,6 @@
 package com.company.core;
 
-import com.company.DRY.Assert;
+import com.company.dry.Assert;
 import com.company.exceptions.NotMountedException;
 
 import java.io.*;
@@ -19,6 +19,7 @@ public class Scan {
         this.fromEDL = fromEDL.stream()
                 .map(String::toLowerCase)
                 .collect(Collectors.toList());
+        fromEDL.add("");
     }
 
     public List<Path> getFromSource(final Path source, final boolean checkFiles) throws NotMountedException {

@@ -1,6 +1,6 @@
 package com.company.core;
 
-import com.company.DRY.Assert;
+import com.company.dry.Assert;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -22,7 +22,7 @@ public class EDL {
         this.EDL = EDL;
     }
 
-    public List<String> getInput(final boolean shortReelNames) throws Exception{
+    public List<String> getInput(final boolean shortReelNames) {
         List<String> linesFromEDL = getLinesFromEDL(this.EDL);
         if (linesFromEDL.isEmpty())
             return new ArrayList<>();
