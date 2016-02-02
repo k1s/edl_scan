@@ -14,23 +14,22 @@ public class Scan {
 
     private final List<String> fromEDL;
 
-    public Scan(List<String> fromEDL) {
-        Assert.require(!fromEDL.isEmpty());
-        this.fromEDL = fromEDL.stream()
+    public Scan(final List<String> fromEDLList) {
+        Assert.require(!fromEDLList.isEmpty());
+        this.fromEDL = fromEDLList.stream()
                 .map(String::toLowerCase)
                 .collect(Collectors.toList());
-        fromEDL.add("");
     }
 
     public List<Path> getFromSource(final Path source, final boolean checkFiles) throws NotMountedException {
         checkSource(source);
-        Set<Path> filesWalk = Collections.newSetFromMap(new ConcurrentHashMap<>());
+        final Set<Path> filesWalk = Collections.newSetFromMap(new ConcurrentHashMap<>());
         return customWalk(source, filesWalk, checkFiles);
     }
 
     private void checkSource(final Path source) throws NotMountedException {
         Assert.requirePath(source);
-        File root = new File(String.valueOf(source));
+        final File root = new File(String.valueOf(source));
         if (root.list().length == 0)
             throw new NotMountedException();
     }
