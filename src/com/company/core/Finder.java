@@ -10,11 +10,11 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class Scan {
+public class Finder {
 
     private final List<String> fromEDL;
 
-    public Scan(final List<String> fromEDLList) {
+    public Finder (final List<String> fromEDLList) {
         Assert.require(!fromEDLList.isEmpty());
         this.fromEDL = fromEDLList.stream()
                 .map(String::toLowerCase)

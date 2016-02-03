@@ -12,7 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 
-public class Check {
+public class Checker {
 
     public static void checkScanLogs(final List<String> fromEDL, final String source, final String logs, boolean checkFiles) {
         List<String> notFounded = checkScanNotFound(fromEDL, source, checkFiles);
@@ -27,10 +27,10 @@ public class Check {
 
     private static List<String> checkScanNotFound(final List<String> fromEDL, final String scanDir, boolean checkFiles) {
         ConsoleView.fromEDLOutput(fromEDL);
-        Scan scan = new Scan(fromEDL);
+        Finder finder = new Finder(fromEDL);
         List<Path> fromSource = null;
         try {
-            fromSource = scan.getFromSource(Paths.get(scanDir), checkFiles);
+            fromSource = finder.getFromSource(Paths.get(scanDir), checkFiles);
         } catch (NotMountedException e) {
             e.printStackTrace();
             ConsoleView.errorOutput();

@@ -1,7 +1,8 @@
 package com.company.view;
 
-import com.company.core.Check;
+import com.company.core.Checker;
 import com.company.core.EDL;
+import com.company.core.Scanner;
 import com.company.dry.Assert;
 
 import java.io.IOException;
@@ -104,20 +105,20 @@ public class Menu {
     private void checkLogsRun() {
         String source = this.args.get(2);
         EDL input = new EDL(Paths.get(this.EDL));
-        Check.checkLogs(input.getInput(this.useReelNames), source, new ArrayList<>());
+        Checker.checkLogs(input.getInput(this.useReelNames), source, new ArrayList<>());
     }
 
     private void checkScanRun() {
         String source = this.args.get(2);
         EDL input = new EDL(Paths.get(this.EDL));
-        Check.checkScan(input.getInput(this.useReelNames), source, this.findFiles);
+        Checker.checkScan(input.getInput(this.useReelNames), source, this.findFiles);
     }
 
     private void checkScanLogsRun() {
         String source = this.args.get(2);
         EDL input = new EDL(Paths.get(this.EDL));
         String logs = args.get(3);
-        Check.checkScanLogs(input.getInput(this.useReelNames), source, logs, this.findFiles);
+        Checker.checkScanLogs(input.getInput(this.useReelNames), source, logs, this.findFiles);
     }
 
 
@@ -137,7 +138,7 @@ public class Menu {
                 .forEach(source -> {
                     System.out.println();
                     System.out.println("SCAN " + source);
-                    Check.scan(this.EDL, source, destination, turbo, lto, this.useReelNames, this.findFiles);
+                    Scanner.scan(this.EDL, source, destination, turbo, lto, this.useReelNames, this.findFiles);
                 });
     }
 

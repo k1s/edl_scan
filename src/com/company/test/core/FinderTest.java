@@ -1,6 +1,6 @@
 package com.company.test.core;
 
-import com.company.core.Scan;
+import com.company.core.Finder;
 import com.company.exceptions.NotMountedException;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,11 +16,11 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
-public class ScanTest {
+public class FinderTest {
 
     private final List<String> expected = new ArrayList<>();
     private Path path;
-    private Scan testScan;
+    private Finder finder;
 
     @Before
     public void createScan() {
@@ -33,14 +33,14 @@ public class ScanTest {
         edl.add("test3");
         edl.add("A026R6S5");
         edl.add("A026C005");
-        this.testScan = new Scan(edl);
+        this.finder = new Finder(edl);
     }
 
     public void runTest(boolean checkFiles) {
         Collections.sort(this.expected);
         final List<Path> paths = new ArrayList<>();
         try {
-            paths.addAll(testScan.getFromSource(this.path, checkFiles));
+            paths.addAll(finder.getFromSource(this.path, checkFiles));
         } catch (NotMountedException e) {
             e.printStackTrace();
             fail();
