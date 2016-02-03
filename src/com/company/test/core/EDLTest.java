@@ -29,11 +29,16 @@ public class EDLTest {
         this.testEDL = new EDL(Paths.get(correctFilePath));
     }
 
-    @Test
-    public void testGetInputWithoutShortReels() {
-        List<String> stringsFromEDL = this.testEDL.getInput(false);
+    public void runTest(boolean checkFiles) {
+        List<String> stringsFromEDL = this.testEDL.getInput(checkFiles);
         Collections.sort(stringsFromEDL);
         assertEquals(this.expectedStrings, stringsFromEDL);
+    }
+
+    @Test
+    public void testGetInputWithoutShortReels() {
+        final boolean checkFiles = false;
+        runTest(checkFiles);
     }
 
     @Test
@@ -41,9 +46,7 @@ public class EDLTest {
         String[] expected = new String[]{"A066R1KA", "A041R1KA", "A050R56W", "A051R56W","ST5A3328"};
         this.expectedStrings.addAll(Arrays.asList(expected));
         Collections.sort(this.expectedStrings);
-        List<String> stringsFromEDL = this.testEDL.getInput(true);
-        Collections.sort(stringsFromEDL);
-        assertEquals(this.expectedStrings, stringsFromEDL);
+        runTest(true);
     }
 
 }

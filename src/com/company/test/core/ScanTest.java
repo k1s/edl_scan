@@ -1,12 +1,10 @@
 package com.company.test.core;
 
 import com.company.core.Scan;
-import org.junit.After;
+import com.company.exceptions.NotMountedException;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,70 +18,55 @@ import static org.junit.Assert.*;
 
 public class ScanTest {
 
-    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+    private final List<String> expected = new ArrayList<>();
+    private Path path;
+    private Scan testScan;
 
     @Before
-    public void setUpStreams() {
-        System.setOut(new PrintStream(outContent));
-        System.setErr(new PrintStream(errContent));
+    public void createScan() {
+        URL url = this.getClass().getResource("scan");
+        this.path = Paths.get(url.getFile().replace("%20", " "));
+        List<String> edl = new ArrayList<>();
+        edl.add("A001_C003");
+        edl.add("test");
+        edl.add("test1.mov");
+        edl.add("test3");
+        edl.add("A026R6S5");
+        edl.add("A026C005");
+        this.testScan = new Scan(edl);
     }
 
-    @After
-    public void cleanUpStreams() {
-        System.setOut(null);
-        System.setErr(null);
+    public void runTest(boolean checkFiles) {
+        Collections.sort(this.expected);
+        final List<Path> paths = new ArrayList<>();
+        try {
+            paths.addAll(testScan.getFromSource(this.path, checkFiles));
+        } catch (NotMountedException e) {
+            e.printStackTrace();
+            fail();
+        }
+        final List<String> stringsFromPaths = paths.stream()
+                .map(Path::getFileName)
+                .map(Path::toString)
+                .sorted()
+                .collect(Collectors.toList());
+        assertEquals(this.expected, stringsFromPaths);
     }
 
     @Test
     public void testScanWithoutFiles() throws Exception {
-        URL url = this.getClass().getResource("scan");
-        String correctFilePath = url.getFile().replace("%20", " ");
-        List<String> edl = new ArrayList<>();
-        edl.add("A001_C003");
-        edl.add("test");
-        edl.add("test1.mov");
-        edl.add("test3");
-        edl.add("A026R6S5");
-        List<String> expectedStringsWithoutFiles = new ArrayList<>();
-        String[] expected = new String[]{"A026R6S5", "A001_C003.RDC", "test1.mov"};
-        expectedStringsWithoutFiles.addAll(Arrays.asList(expected));
-        Collections.sort(expectedStringsWithoutFiles);
-        boolean checkFiles = false;
-        Scan scan = new Scan(edl);
-        List<Path> paths = scan.getFromSource(Paths.get(correctFilePath), checkFiles);
-        List<String> stringsFromPaths = paths.stream()
-                .map(Path::getFileName)
-                .map(Path::toString)
-                .sorted()
-                .collect(Collectors.toList());
-        assertEquals(expectedStringsWithoutFiles, stringsFromPaths);
+        String[] expectedArray = new String[]{"A026C005_150518_R6S5", "A026R6S5", "A001_C003.RDC", "test1.mov"};
+        this.expected.addAll(Arrays.asList(expectedArray));
+        runTest(false);
     }
 
     @Test
     public void testScanWithFiles() throws Exception {
-        URL url = this.getClass().getResource("scan");
-        String correctFilePath = url.getFile().replace("%20", " ");
-        List<String> edl = new ArrayList<>();
-        edl.add("A001_C003");
-        edl.add("test");
-        edl.add("test1.mov");
-        edl.add("test3");
-        edl.add("A026R6S5");
-        List<String> expectedStringsWithFiles = new ArrayList<>();
         String[] expectedWith = new String[]{"A026R6S5", "A026R6S5.mov", "A001_C003.mov", "A001_C003_001.R3D",
-                "A001_C003_002.R3D", "A001_C003.RDC", "test.mov", "test1.mov", "test3.ban"};
-        expectedStringsWithFiles.addAll(Arrays.asList(expectedWith));
-        Collections.sort(expectedStringsWithFiles);
-        boolean checkFiles = true;
-        Scan scan = new Scan(edl);
-        List<Path> pathsWithFiles = scan.getFromSource(Paths.get(correctFilePath), checkFiles);
-        List<String> stringsFromPathsWithFiles = pathsWithFiles.stream()
-                .map(Path::getFileName)
-                .map(Path::toString)
-                .sorted()
-                .collect(Collectors.toList());
-        assertEquals(expectedStringsWithFiles, stringsFromPathsWithFiles);
+                "A001_C003_002.R3D", "A001_C003.RDC", "test.mov", "test1.mov", "test3.ban",
+        "A026C005_150518_R6S5", "A026C005_150518_R6S5_101.ari"};
+        this.expected.addAll(Arrays.asList(expectedWith));
+        runTest(true);
     }
 
 }
