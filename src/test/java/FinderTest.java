@@ -4,6 +4,8 @@ import main.java.core.Finder;
 import main.java.exceptions.NotMountedException;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.net.URL;
 import java.nio.file.Path;
@@ -24,7 +26,7 @@ public class FinderTest {
 
     @Before
     public void createScan() {
-        URL url = this.getClass().getResource("scan");
+        URL url = this.getClass().getClassLoader().getResource("scan/");
         this.path = Paths.get(url.getFile().replace("%20", " "));
         List<String> edl = new ArrayList<>();
         edl.add("A001_C003");
