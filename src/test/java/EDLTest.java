@@ -1,6 +1,6 @@
-package com.company.test.core;
+package test.java;
 
-import com.company.core.EDL;
+import main.java.core.EDL;
 import org.junit.Before;
 import org.junit.Test;
 

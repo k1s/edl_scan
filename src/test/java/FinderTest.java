@@ -1,7 +1,7 @@
-package com.company.test.core;
+package test.java;
 
-import com.company.core.Finder;
-import com.company.exceptions.NotMountedException;
+import main.java.core.Finder;
+import main.java.exceptions.NotMountedException;
 import org.junit.Before;
 import org.junit.Test;
 

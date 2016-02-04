@@ -1,4 +1,4 @@
-package main.java.test.core;
+package test.java;
 
 import org.junit.After;
 import org.junit.Before;
