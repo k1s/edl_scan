@@ -1,9 +1,7 @@
-package main.java.view;
+package view;
 
-import main.java.core.Checker;
-import main.java.core.EDL;
-import main.java.core.Scanner;
-import main.java.dry.Assert;
+import core.*;
+import dry.Assert;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -18,8 +16,10 @@ public class Menu {
     private boolean useReelNames;
     private boolean findFiles;
     private String EDL;
+    private Checker checker;
 
     public Menu(List<String> args) {
+        this.checker = new Checker();
         this.args = args;
         this.EDL = args.get(1);
         Assert.requirePath(Paths.get(this.EDL));
@@ -105,20 +105,20 @@ public class Menu {
     private void checkLogsRun() {
         String source = this.args.get(2);
         EDL input = new EDL(Paths.get(this.EDL));
-        Checker.checkLogs(input.getInput(this.useReelNames), source, new ArrayList<>());
+        checker.checkLogs(input.getInput(this.useReelNames), source, new ArrayList<>());
     }
 
     private void checkScanRun() {
         String source = this.args.get(2);
         EDL input = new EDL(Paths.get(this.EDL));
-        Checker.checkScan(input.getInput(this.useReelNames), source, this.findFiles);
+        checker.checkScan(input.getInput(this.useReelNames), source, this.findFiles);
     }
 
     private void checkScanLogsRun() {
         String source = this.args.get(2);
         EDL input = new EDL(Paths.get(this.EDL));
         String logs = args.get(3);
-        Checker.checkScanLogs(input.getInput(this.useReelNames), source, logs, this.findFiles);
+        checker.checkScanLogs(input.getInput(this.useReelNames), source, logs, this.findFiles);
     }
 
 

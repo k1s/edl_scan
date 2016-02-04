@@ -1,7 +1,7 @@
-package main.java.core;
+package core;
 
-import main.java.exceptions.NotMountedException;
-import main.java.view.ConsoleView;
+import exceptions.NotMountedException;
+import view.ConsoleView;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

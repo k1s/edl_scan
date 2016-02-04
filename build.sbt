@@ -11,13 +11,4 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.6" % "test"
 )
 
-//libraryDependencies += "com.novocode" % "junit-interface" % "0.11" % "test"
-//
-//libraryDependencies += "junit" % "junit" % "4.11" % "test"
-//
-//libraryDependencies += "org.scalactic" %% "scalactic" % "2.2.6"
-//
-//libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.6" % "test"
-//
-
 

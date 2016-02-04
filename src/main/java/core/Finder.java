@@ -1,7 +1,7 @@
-package main.java.core;
+package core;
 
-import main.java.dry.Assert;
-import main.java.exceptions.NotMountedException;
+import dry.Assert;
+import exceptions.NotMountedException;
 
 import java.io.*;
 import java.nio.file.Files;

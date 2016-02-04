@@ -1,6 +1,6 @@
-package main.java.core;
+package core;
 
-import main.java.dry.Assert;
+import dry.Assert;
 
 import java.io.*;
 import java.nio.file.Files;

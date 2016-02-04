@@ -1,8 +1,7 @@
-package main.java.core;
+package core;
 
-import main.java.exceptions.NotMountedException;
-import main.java.view.ConsoleView;
-
+import view.*;
+import exceptions.*;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -12,18 +11,19 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
-
 public class Checker {
 
+    private final List<String> found = new ArrayList<>();
 
-    public static void checkLogs(final List<String> fromEDL, final String source, final List<String> notFoundedAtAll) {
+
+    public void checkLogs(final List<String> fromEDL, final String source, final List<String> notFoundedAtAll) {
         ConsoleView.fromEDLOutput(fromEDL);
         fromEDL.parallelStream().forEach(s -> {
             seeLogs(Paths.get(source), s, notFoundedAtAll);
         });
     }
 
-    public static void checkScanLogs(final List<String> fromEDL, final String source, final String logs,
+    public void checkScanLogs(final List<String> fromEDL, final String source, final String logs,
                                      boolean checkFiles) {
         List<String> notFounded = checkScanNotFound(fromEDL, source, checkFiles);
         List<String> notFoundedAtAll = new CopyOnWriteArrayList<>(notFounded);
@@ -34,6 +34,10 @@ public class Checker {
     public static void checkScan(final List<String> fromEDL, final String scanDir, boolean checkFiles) {
         List<String> notFounded = checkScanNotFound(fromEDL, scanDir, checkFiles);
         System.out.println("NOT FOUND: " + notFounded);
+    }
+
+    public List<String> getFound() {
+        return this.found;
     }
 
     private static List<String> checkScanNotFound(final List<String> fromEDL, final String scanDir,
@@ -55,7 +59,7 @@ public class Checker {
         return fromSourceTOScan;
     }
 
-    private static void seeLogs(final Path path, final String strEDL, List<String> notFoundedAtAll) {
+    private void seeLogs(final Path path, final String strEDL, List<String> notFoundedAtAll) {
         try {
             Files.list(path).parallel()
                     .filter(p -> !p.toString().contains(".DS_Store"))
@@ -72,7 +76,7 @@ public class Checker {
         }
     }
 
-    private static void seeFileForStrings(final String search, final Path path, final List<String> notFoundedAtAll) {
+    private void seeFileForStrings(final String search, final Path path, final List<String> notFoundedAtAll) {
         try {
             Files.lines(path).parallel()
                     .forEach(str -> {
@@ -80,8 +84,11 @@ public class Checker {
                             && !str.contains(".WAV")
                             && !str.contains(".XML")
                             && !str.contains(".wav")
-                            && !str.contains(".xml"))
-                    System.out.println(search + " is founded in " + path + ": " + str);
+                            && !str.contains(".xml")) {
+                            String nextFound = search + " is founded in " + path + ": " + str;
+                            this.found.add(nextFound);
+                            System.out.println(nextFound);
+                        }
                 notFoundedAtAll.remove(search);
             });
         } catch (IOException e) {
