@@ -1,6 +1,7 @@
 package core;
 
-import dry.Assert;
+import helpers.Assert;
+import helpers.FileHelper;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -9,6 +10,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class EDL {
 
@@ -24,7 +26,8 @@ public class EDL {
     }
 
     public List<String> getInput(final boolean shortReelNames) {
-        final List<String> linesFromEDL = getLinesFromEDL(this.EDL);
+        final List<String> linesFromEDL = FileHelper.lines(this.EDL);
+
         if (linesFromEDL.isEmpty())
             return new ArrayList<>();
         else

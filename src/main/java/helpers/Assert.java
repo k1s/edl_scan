@@ -1,4 +1,4 @@
-package dry;
+package helpers;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

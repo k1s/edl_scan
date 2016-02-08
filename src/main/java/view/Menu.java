@@ -1,33 +1,13 @@
 package view;
 
 import core.*;
-import dry.Assert;
-
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
 public class Menu {
 
-    private List<String> args;
-    private boolean useReelNames;
-    private boolean findFiles;
-    private String EDL;
-    private Checker checker;
-
-    public Menu(List<String> args) {
-        this.checker = new Checker();
-        this.args = args;
-        this.EDL = args.get(1);
-        Assert.requirePath(Paths.get(this.EDL));
-        this.useReelNames = args.stream()
-                                .anyMatch(s -> s.equals("usereels"));
-        this.findFiles = args.stream()
-                             .anyMatch(s -> s.equals("findfiles"));
-    }
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
@@ -40,6 +20,7 @@ public class Menu {
             System.out.println("java -jar edl_scan.jar superscan EDL destination  sources – scan from EDL with cxfscp");
             System.out.println();
             System.out.println("java -jar edl_scan.jar checklogs EDL source – find from EDL in logs");
+            System.out.println("checks only UTF files, others would be skipped");
             System.out.println("java -jar edl_scan.jar checkscan EDL source – find from EDL in source," +
                     " also can be used for verifying scan");
             System.out.println("java -jar edl_scan.jar checkscanlogs EDL source logs – verifying scan " +
@@ -54,94 +35,13 @@ public class Menu {
 
         List<String> varargs = Arrays.asList(args);
 
-        Menu menu = new Menu(varargs);
-        menu.run();
+        Runner runner = new Runner(varargs);
+        runner.run();
 
         String end = Calendar.getInstance().getTime().toString();
 
         System.out.println("BEGIN " + begin);
         System.out.println("END " + end);
-
     }
-
-    private void run() {
-
-        ConsoleView.startOutput(this.EDL);
-
-        switch (args.get(0)) {
-            case "scan": {
-                System.out.println("SCAN");
-                runCase(false, false);
-                break;
-            }
-            case "scanlto": {
-                System.out.println("SCANLTO");
-                runCase(false, true);
-                break;
-            }
-            case "superscan": {
-                System.out.println("SUPERSCAN");
-                runCase(true, false);
-                break;
-            }
-            case "checklogs": {
-                System.out.println("CHECKLOGS");
-                checkLogsRun();
-                break;
-            }
-            case "checkscan": {
-                System.out.println("CHECKSCAN");
-                checkScanRun();
-                break;
-            }
-            case "checkscanlogs": {
-                System.out.println("CHECKSCANLOGS");
-                checkScanLogsRun();
-                break;
-            }
-        }
-    }
-
-    private void checkLogsRun() {
-        String source = this.args.get(2);
-        EDL input = new EDL(Paths.get(this.EDL));
-        checker.checkLogs(input.getInput(this.useReelNames), source, new ArrayList<>());
-    }
-
-    private void checkScanRun() {
-        String source = this.args.get(2);
-        EDL input = new EDL(Paths.get(this.EDL));
-        checker.checkScan(input.getInput(this.useReelNames), source, this.findFiles);
-    }
-
-    private void checkScanLogsRun() {
-        String source = this.args.get(2);
-        EDL input = new EDL(Paths.get(this.EDL));
-        String logs = args.get(3);
-        checker.checkScanLogs(input.getInput(this.useReelNames), source, logs, this.findFiles);
-    }
-
-
-    private void runCase(boolean turbo, boolean lto) {
-        String scanTo = args.get(2);
-        List<String> sources = getSources(args);
-        runCheck(scanTo, sources, turbo, lto);
-    }
-
-    private List<String> getSources(List<String> args) {
-        return new ArrayList<>(args.subList(3, args.size()));
-    }
-
-    private void runCheck(String destination, List<String> sources, boolean turbo, boolean lto) {
-        System.out.println("SOURCES " + sources);
-        sources.stream()
-                .forEach(source -> {
-                    System.out.println();
-                    System.out.println("SCAN " + source);
-                    Scanner.scan(this.EDL, source, destination, turbo, lto, this.useReelNames, this.findFiles);
-                });
-    }
-
-
 
 }

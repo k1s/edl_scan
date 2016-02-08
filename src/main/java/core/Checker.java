@@ -1,5 +1,6 @@
 package core;
 
+import helpers.FileHelper;
 import view.*;
 import exceptions.*;
 
@@ -10,34 +11,31 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Checker {
 
-    private final List<String> found = new ArrayList<>();
+    private final static String LINE_SEPARATOR = "   |---->   ";
 
+    public List<String> checkLogs(final List<String> fromEDL, final String source) {
+        Map<Path, List<String>> foundInFiles = searchFromEDLInFiles(Paths.get(source), fromEDL);
+        return foundInFiles.entrySet().parallelStream()
+                .map(entry -> "\n " + entry.getKey().toFile().getName() + LINE_SEPARATOR + entry.getValue().toString())
+                .collect(Collectors.toList());
 
-    public void checkLogs(final List<String> fromEDL, final String source, final List<String> notFoundedAtAll) {
-        ConsoleView.fromEDLOutput(fromEDL);
-        fromEDL.parallelStream().forEach(s -> {
-            seeLogs(Paths.get(source), s, notFoundedAtAll);
-        });
     }
 
     public void checkScanLogs(final List<String> fromEDL, final String source, final String logs,
                                      boolean checkFiles) {
         List<String> notFounded = checkScanNotFound(fromEDL, source, checkFiles);
         List<String> notFoundedAtAll = new CopyOnWriteArrayList<>(notFounded);
-        checkLogs(notFounded, logs, notFoundedAtAll);
+        checkLogs(notFounded, logs);
         System.out.println("NOT FOUND AT ALL " + notFoundedAtAll);
     }
 
     public static void checkScan(final List<String> fromEDL, final String scanDir, boolean checkFiles) {
         List<String> notFounded = checkScanNotFound(fromEDL, scanDir, checkFiles);
         System.out.println("NOT FOUND: " + notFounded);
-    }
-
-    public List<String> getFound() {
-        return this.found;
     }
 
     private static List<String> checkScanNotFound(final List<String> fromEDL, final String scanDir,
@@ -59,41 +57,60 @@ public class Checker {
         return fromSourceTOScan;
     }
 
-    private void seeLogs(final Path path, final String strEDL, List<String> notFoundedAtAll) {
-        try {
-            Files.list(path).parallel()
-                    .filter(p -> !p.toString().contains(".DS_Store"))
+    private Map<Path,List<String>> searchFromEDLInFiles(final Path path, final List<String> fromEDL) {
+        return searchInFiles(filesFilter(path), fromEDL);
+    }
+
+
+    private Map<Path, List<String>> searchInFiles(final Stream<Path> paths, final List<String> EDLstrings) {
+        Map<Path, List<String>> foundInFiles = new HashMap<>();
+        paths.parallel()
                     .forEach(file -> {
-                        if (file.toFile().isDirectory()) {
-                            seeLogs(file, strEDL, notFoundedAtAll);
-                        }
-                        if (file.toFile().isFile()) {
-                            seeFileForStrings(strEDL, file, notFoundedAtAll);
-                        }
+                        List<String> founds = searchFileForStrings(EDLstrings, file);
+                        if (!founds.isEmpty())
+                            foundInFiles.put(file, founds);
                     });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        return foundInFiles;
     }
 
-    private void seeFileForStrings(final String search, final Path path, final List<String> notFoundedAtAll) {
+    private Stream<Path> filesFilter(final Path path) {
+        return files(path).parallel()
+                .filter(p -> !p.toString().contains(".DS_Store") && !p.toFile().isDirectory());
+    }
+
+    private Stream<Path> files(final Path path) {
+        Stream<Path> filesStream = Stream.empty();
         try {
-            Files.lines(path).parallel()
-                    .forEach(str -> {
-                        if (str.contains(search)
-                            && !str.contains(".WAV")
-                            && !str.contains(".XML")
-                            && !str.contains(".wav")
-                            && !str.contains(".xml")) {
-                            String nextFound = search + " is founded in " + path + ": " + str;
-                            this.found.add(nextFound);
-                            System.out.println(nextFound);
-                        }
-                notFoundedAtAll.remove(search);
-            });
+            filesStream = Files.walk(path);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return filesStream;
     }
 
+    private List<String> searchFileForStrings(final List<String> EDLstrings, final Path path) {
+            return FileHelper.lines(path).stream().parallel()
+                    .filter(line -> validContain(line, EDLstrings))
+                    .map(line -> extractFoundFromLine(line, EDLstrings))
+                    .distinct()
+                    .collect(Collectors.toList());
+    }
+
+    private String extractFoundFromLine(String line, List<String> search) {
+        return search.stream()
+                .filter(line::contains)
+                .findFirst()
+                .get();
+    }
+
+    private boolean validContain(final String line, final List<String> search) {
+        boolean contains = search.stream()
+                .anyMatch(line::contains);
+        return contains
+                && !line.contains(".WAV")
+                && !line.contains(".XML")
+                && !line.contains(".wav")
+                && !line.contains(".xml");
+    }
 }
