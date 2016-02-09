@@ -74,18 +74,20 @@ public class Runner {
     private void checkLogsRun() {
         String source = this.args.get(2);
         List<String> strs = checker.checkLogs(this.EDLstrings, source);
-        System.out.println(strs);
+        System.out.println("FOUND IN LOGS   " + strs);
     }
 
     private void checkScanRun() {
         String source = this.args.get(2);
-        checker.checkScan(this.EDLstrings, source, this.findFiles);
+        List<String> strs = checker.checkScan(this.EDLstrings, source);
+        System.out.println("NOT FOUND IN SCAN   " + strs);
     }
 
     private void checkScanLogsRun() {
         String source = this.args.get(2);
         String logs = args.get(3);
-        checker.checkScanLogs(this.EDLstrings, source, logs, this.findFiles);
+        String str = checker.checkScanLogs(this.EDLstrings, source, logs);
+        System.out.println(str);
     }
 
 

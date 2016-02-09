@@ -3,14 +3,11 @@ package core;
 import helpers.Assert;
 import helpers.FileHelper;
 
-import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class EDL {
 
@@ -32,16 +29,6 @@ public class EDL {
             return new ArrayList<>();
         else
             return extractFromEDL(getPatterns(shortReelNames), linesFromEDL);
-    }
-
-    private List<String> getLinesFromEDL(final Path edl) {
-        final List<String> lines = new ArrayList<>();
-        try {
-            lines.addAll(Files.readAllLines(edl));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return lines;
     }
 
     private List<Pattern> getPatterns(final boolean shortReelNames) {
