@@ -12,7 +12,6 @@ public class ConsoleView {
     }
 
     public static void fromEDLOutput(final List<String> fromEDL) {
-        System.out.println();
         System.out.println("From EDL: " + fromEDL);
         System.out.println();
     }

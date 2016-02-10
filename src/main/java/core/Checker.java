@@ -25,9 +25,9 @@ public class Checker {
     public String checkScanLogs(final List<String> fromEDL, final String source, final String logs) {
         List<String> notFound = checkScanDirectoryForFilesFromEDL(fromEDL, source);
         Map<String, List<String>> foundInLogFiles = searchFromEDLInLogFiles(Paths.get(logs), notFound);
-        String nf = ("\nNOT FOUND " + notFound);
-        String finl = ("\nFOUND IN LOGS " + foundInLogFiles);
-        String nfaa = ("\nNOT FOUND AT ALL " + notFoundAtAll(foundInLogFiles, notFound));
+        String nf = ("\nNOT FOUND \n" + notFound + "\n\n");
+        String finl = ("\nFOUND IN LOGS \n" + foundInLogsFilesToList(foundInLogFiles) + "\n\n");
+        String nfaa = ("\nNOT FOUND AT ALL \n" + notFoundAtAll(foundInLogFiles, notFound) + "\n\n");
         return nf + finl + nfaa;
     }
 

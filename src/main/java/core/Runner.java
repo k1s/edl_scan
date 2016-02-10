@@ -34,7 +34,6 @@ public class Runner {
     public void run() {
 
         ConsoleView.startOutput(this.EDL);
-        System.out.println();
         ConsoleView.fromEDLOutput(this.EDLstrings);
 
         switch (args.get(0)) {

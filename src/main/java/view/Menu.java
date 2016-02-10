@@ -1,6 +1,7 @@
 package view;
 
-import core.*;
+import core.Runner;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -29,7 +30,7 @@ public class Menu {
             System.out.println("You can add options to the end of query:");
             System.out.printf("usereels – also search for reel names");
             System.out.printf("findfiles – search for distinct files names; be careful and dont use it " +
-                    "with large sequences like from ARRI");
+                    "with large sequences like from ARRI\n");
             System.exit(-1);
         }
 
