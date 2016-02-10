@@ -1,6 +1,6 @@
-package com.company.view;
+package view;
 
-import java.util.ArrayList;
+import java.nio.file.Path;
 import java.util.List;
 
 public class ConsoleView {
@@ -17,7 +17,7 @@ public class ConsoleView {
         System.out.println();
     }
 
-    public static void matched(final ArrayList<String> fromSource) {
+    public static void matched(final List<Path> fromSource) {
         System.out.println();
         System.out.println("Matched: " + fromSource);
         System.out.println();
