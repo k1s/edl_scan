@@ -1,5 +1,4 @@
 import core.EDL;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 public class EDLTest {
@@ -23,7 +22,7 @@ public class EDLTest {
     @Before
     public void createTest() {
         URL url = this.getClass().getClassLoader().getResource("test.edl");
-        String correctFilePath = url.getFile().replace("%20", " ");
+        String correctFilePath = url != null ? url.getFile().replace("%20", " ") : "";
         String[] expected = new String[]{"A066C004_150602_R1KA", "C070_C001_0715GR", "A051C015_141126_R56W",
                 "A050C003_141126_R56W", "ST5A3328.MOV", "MVI_4321"};
         this.expectedStrings.addAll(Arrays.asList(expected));

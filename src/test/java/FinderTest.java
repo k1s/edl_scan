@@ -1,6 +1,5 @@
 import core.Finder;
 import exceptions.NotMountedException;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class FinderTest {
 
@@ -24,7 +24,7 @@ public class FinderTest {
     @Before
     public void createScan() {
         URL url = this.getClass().getClassLoader().getResource("scan/");
-        this.path = Paths.get(url.getFile().replace("%20", " "));
+        this.path = Paths.get(url != null ? url.getFile().replace("%20", " ") : "");
         List<String> edl = new ArrayList<>();
         edl.add("A001_C003");
         edl.add("test");

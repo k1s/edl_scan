@@ -16,7 +16,7 @@ public class Runner {
     private String EDL;
     private List<String> EDLstrings;
 
-    public Runner(List<String> args) {
+    public Runner(final List<String> args) {
         this.checker = new Checker();
         this.args = args;
         this.useReelNames = args.stream()
@@ -91,23 +91,24 @@ public class Runner {
     }
 
 
-    private void runCase(boolean turbo, boolean lto) {
+    private void runCase(final boolean turbo, final boolean lto) {
         String scanTo = args.get(2);
         List<String> sources = getSources(args);
         runCheck(scanTo, sources, turbo, lto);
     }
 
-    private List<String> getSources(List<String> args) {
+    private List<String> getSources(final List<String> args) {
         return new ArrayList<>(args.subList(3, args.size()));
     }
 
-    private void runCheck(String destination, List<String> sources, boolean turbo, boolean lto) {
+    private void runCheck(final String destination, final List<String> sources, final boolean turbo, final boolean lto) {
+        ConsoleView.fromEDLOutput(this.EDLstrings);
         System.out.println("SOURCES " + sources);
         sources.stream()
                 .forEach(source -> {
                     System.out.println();
                     System.out.println("SCAN " + source);
-                    Scanner.scan(this.EDL, source, destination, turbo, lto, this.useReelNames, this.findFiles);
+                    Wrangler.scan(this.EDLstrings, source, destination, turbo, lto, this.findFiles);
                 });
     }
 }

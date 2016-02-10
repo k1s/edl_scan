@@ -1,15 +1,14 @@
 package core;
 
+import exceptions.NotMountedException;
 import helpers.FileHelper;
-import view.*;
-import exceptions.*;
+import view.ConsoleView;
 
-import java.io.*;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,7 +22,7 @@ public class Checker {
         return foundInLogsFilesToList(foundInFiles);
     }
 
-    public String checkScanLogs(final List<String> fromEDL, final String source, final String logs) { //TODO
+    public String checkScanLogs(final List<String> fromEDL, final String source, final String logs) {
         List<String> notFound = checkScanDirectoryForFilesFromEDL(fromEDL, source);
         Map<String, List<String>> foundInLogFiles = searchFromEDLInLogFiles(Paths.get(logs), notFound);
         String nf = ("\nNOT FOUND " + notFound);
@@ -124,7 +123,7 @@ public class Checker {
                     .collect(Collectors.toList());
     }
 
-    private String extractFoundFromLine(String line, List<String> search) {
+    private String extractFoundFromLine(final String line, final List<String> search) {
         return search.stream()
                 .filter(line::contains)
                 .findFirst()

@@ -1,10 +1,7 @@
-package test.scala
-
-import java.util.Collections
-
-import scala.collection.JavaConverters._
 import core.Checker
 import org.scalatest._
+
+import scala.collection.JavaConverters._
 import scala.language.postfixOps
 
 class CheckerTest extends FunSuite {
