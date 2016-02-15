@@ -4,7 +4,10 @@ import helpers.Assert;
 import helpers.FileHelper;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -32,10 +35,10 @@ public class EDL {
     }
 
     private List<Pattern> getPatterns(final boolean shortReelNames) {
-        final Pattern reelNames = Pattern.compile(SHORT_REEL_NAME);
-        final Pattern sourceFiles = Pattern.compile(REEL_NAME_FROM_SOURCE_FILE);
-        final Pattern clipNames = Pattern.compile(REEL_NAME_FROM_CLIP_NAME);
-        final List<Pattern> patterns = new ArrayList<>();
+        Pattern reelNames = Pattern.compile(SHORT_REEL_NAME);
+        Pattern sourceFiles = Pattern.compile(REEL_NAME_FROM_SOURCE_FILE);
+        Pattern clipNames = Pattern.compile(REEL_NAME_FROM_CLIP_NAME);
+        List<Pattern> patterns = new ArrayList<>();
         if (shortReelNames)
             patterns.add(reelNames);
         patterns.add(sourceFiles);
@@ -51,9 +54,9 @@ public class EDL {
     }
 
     private List<String> extractFromLines(final Pattern pattern, final List<String> lines) {
-        final List<String> strOut = new ArrayList<>();
+        Set<String> strOut = new HashSet<>();
         lines.forEach(line -> {
-            final Matcher matcher = pattern.matcher(line);
+            Matcher matcher = pattern.matcher(line);
             if (matcher.find()) {
                 strOut.add(matcher.group().trim());
             }

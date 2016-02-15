@@ -29,7 +29,7 @@ public class Menu {
             System.out.println();
             System.out.println("You can add options to the end of query:");
             System.out.printf("usereels – also search for reel names");
-            System.out.printf("findfiles – search for distinct files names; be careful and dont use it " +
+            System.out.printf("\nfindfiles – search for distinct files names; be careful and dont use it " +
                     "with large sequences like from ARRI\n");
             System.exit(-1);
         }

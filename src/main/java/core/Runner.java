@@ -4,8 +4,8 @@ import helpers.Assert;
 import view.ConsoleView;
 
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Runner {
 
@@ -97,11 +97,13 @@ public class Runner {
     }
 
     private List<String> getSources(final List<String> args) {
-        return new ArrayList<>(args.subList(3, args.size()));
+        List<String> sourcesWithoutParams = args.stream()
+                                            .filter(s -> !(s.equals("usereels") | s.equals("findfiles")))
+                                            .collect(Collectors.toList());
+        return sourcesWithoutParams.subList(3, sourcesWithoutParams.size());
     }
 
     private void runCheck(final String destination, final List<String> sources, final boolean turbo, final boolean lto) {
-        ConsoleView.fromEDLOutput(this.EDLstrings);
         System.out.println("SOURCES " + sources);
         sources.stream()
                 .forEach(source -> {
