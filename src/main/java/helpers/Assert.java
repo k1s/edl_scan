@@ -16,6 +16,6 @@ public final class Assert {
 
     public static void requirePath(final Path path) {
         if (!Files.exists(path))
-            throw new IllegalArgumentException("Path does not exist");
+            throw new IllegalArgumentException(path + "    Path does not exist");
     }
 }

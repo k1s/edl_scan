@@ -4,6 +4,12 @@ version := "0.0.2"
 
 scalaVersion := "2.11.7"
 
+assemblyJarName in assembly := "edl_scan.jar"
+
+test in assembly := {}
+
+mainClass in assembly := Some("view.Menu")
+
 libraryDependencies ++= Seq(
   "com.novocode" % "junit-interface" % "0.11" % "test",
   "junit" % "junit" % "4.11" % "test",
