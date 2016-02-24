@@ -42,15 +42,16 @@ public class Finder {
         try {
             Files.list(source)
                     .parallel()
-                    .filter(path -> !path.toString().contains(".DS_Store"))
-                    .forEach(path -> {
-                        if (Files.isDirectory(path)) {
-                            checkDirName(path, filesWalk);
-                            customWalk(path, filesWalk, checkFiles);
-                        }
-                        if (Files.isRegularFile(path)) {
-                            checkFileName(path, filesWalk, checkFiles);
-                        }
+                    .filter(path -> !path.toString().contains(".DS_Store") & !path.toString().contains(".Trashes")       //TODO filehelper
+                            & !path.toString().contains(".DocumentRevisions-V100"))
+                            .forEach(path -> {
+                                if (Files.isDirectory(path)) {
+                                    checkDirName(path, filesWalk);
+                                    customWalk(path, filesWalk, checkFiles);
+                                }
+                                if (Files.isRegularFile(path)) {
+                                    checkFileName(path, filesWalk, checkFiles);
+                                }
                     });
         } catch (IOException e) {
             e.printStackTrace();
