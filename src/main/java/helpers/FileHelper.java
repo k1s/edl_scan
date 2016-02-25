@@ -36,7 +36,8 @@ public class FileHelper {
         try {
             filesList.addAll(Files.list(source)
                     .filter(path -> !path.toString().contains(".DS_Store") &
-                                    !path.toString().contains(".Trashes"))
+                                    !path.toString().contains(".Trashes") &
+                                    !path.toString().contains(".DocumentRevisions-V100"))
                     .collect(Collectors.toList()));
         } catch (IOException e) {
             e.printStackTrace();
