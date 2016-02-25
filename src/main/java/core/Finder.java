@@ -2,9 +2,9 @@ package core;
 
 import exceptions.NotMountedException;
 import helpers.Assert;
+import helpers.FileHelper;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class Finder {
 
-    private final List<String> fromEDL;
+    private List<String> fromEDL;
 
     public Finder (final List<String> fromEDLList) {
         Assert.require(!fromEDLList.isEmpty());
@@ -27,8 +27,9 @@ public class Finder {
 
     public List<Path> getFromSource(final Path source, final boolean checkFiles) throws NotMountedException {
         checkSource(source);
-        final Set<Path> filesWalk = Collections.newSetFromMap(new ConcurrentHashMap<>());
-        return customWalk(source, filesWalk, checkFiles);
+        Set<Path> filesWalk = Collections.newSetFromMap(new ConcurrentHashMap<>());
+        List<Path> fromSource = FileHelper.files(source);
+        return customWalk(fromSource, filesWalk, checkFiles);
     }
 
     private void checkSource(final Path source) throws NotMountedException {
@@ -38,24 +39,18 @@ public class Finder {
             throw new NotMountedException();
     }
 
-    private List<Path> customWalk(final Path source, final Set<Path> filesWalk, final boolean checkFiles) {
-        try {
-            Files.list(source)
-                    .parallel()
-                    .filter(path -> !path.toString().contains(".DS_Store") & !path.toString().contains(".Trashes")       //TODO filehelper
-                            & !path.toString().contains(".DocumentRevisions-V100"))
+    private List<Path> customWalk(final List<Path> source, final Set<Path> filesWalk, final boolean checkFiles) {
+        source.parallelStream()
                             .forEach(path -> {
                                 if (Files.isDirectory(path)) {
                                     checkDirName(path, filesWalk);
-                                    customWalk(path, filesWalk, checkFiles);
+                                    customWalk(FileHelper.files(path), filesWalk, checkFiles);
                                 }
                                 if (Files.isRegularFile(path)) {
                                     checkFileName(path, filesWalk, checkFiles);
                                 }
-                    });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                            });
+
         return new ArrayList<>(filesWalk);
     }
 

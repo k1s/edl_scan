@@ -25,13 +25,12 @@ public class EDL {
         this.EDL = EDL;
     }
 
-    public List<String> getInput(final boolean shortReelNames) {
+    public List<String> getInput(final boolean shortReelNames, final boolean namesFromLines) {
         final List<String> linesFromEDL = FileHelper.lines(this.EDL);
 
-        if (linesFromEDL.isEmpty())
-            return new ArrayList<>();
-        else
-            return extractFromEDL(getPatterns(shortReelNames), linesFromEDL);
+        if (linesFromEDL.isEmpty()) return new ArrayList<>();
+        else if (namesFromLines) return linesFromEDL;
+        else return extractFromEDL(getPatterns(shortReelNames), linesFromEDL);
     }
 
     private List<Pattern> getPatterns(final boolean shortReelNames) {

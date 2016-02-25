@@ -8,6 +8,7 @@ import java.nio.channels.FileChannel;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,5 +29,18 @@ public class FileHelper {
             e.printStackTrace();
         }
         return strings;
+    }
+
+    public static List<Path> files(Path source) {
+        List<Path> filesList = new ArrayList<>();
+        try {
+            filesList.addAll(Files.list(source)
+                    .filter(path -> !path.toString().contains(".DS_Store") &
+                                    !path.toString().contains(".Trashes"))
+                    .collect(Collectors.toList()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return filesList;
     }
 }

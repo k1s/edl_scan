@@ -30,16 +30,16 @@ public class EDLTest {
         this.testEDL = new EDL(Paths.get(correctFilePath));
     }
 
-    public void runTest(boolean checkFiles) {
-        List<String> stringsFromEDL = this.testEDL.getInput(checkFiles);
+    public void runTest(boolean reels) {
+        List<String> stringsFromEDL = this.testEDL.getInput(reels, false);
         Collections.sort(stringsFromEDL);
         assertEquals(this.expectedStrings, stringsFromEDL);
     }
 
     @Test
     public void testGetInputWithoutShortReels() {
-        final boolean checkFiles = false;
-        runTest(checkFiles);
+        final boolean reels = false;
+        runTest(reels);
     }
 
     @Test
@@ -48,6 +48,19 @@ public class EDLTest {
         this.expectedStrings.addAll(Arrays.asList(expected));
         Collections.sort(this.expectedStrings);
         runTest(true);
+    }
+
+    @Test
+    public void testGetLines() {
+        String[] expected = new String[]{"A112_C008_1013WY", "K003_C003_1016RM", "A129_C005_1025LP"};
+        List<String> expecteds = Arrays.asList(expected);
+        Collections.sort(expecteds);
+        URL url = this.getClass().getClassLoader().getResource("lines_sample");
+        String correctFilePath = url != null ? url.getFile().replace("%20", " ") : "";
+        EDL linesEDL = new EDL(Paths.get(correctFilePath));
+        List<String> stringsFromEDL = linesEDL .getInput(false, true);
+        Collections.sort(stringsFromEDL);
+        assertEquals(expecteds, stringsFromEDL);
     }
 
 }

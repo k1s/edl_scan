@@ -40,9 +40,9 @@ class CheckerTest extends FunSuite {
     assert(expectedWithFiles == fromLogs (EDLwithFiles))
   }
 
-  test("Scan all logs") {
-    println(checker checkLogs(EDLwithFiles.asJava, "/Volumes/DATA/logs/"))
-  }
+//  test("Scan all logs") {
+//    println(checker checkLogs(EDLwithFiles.asJava, "/Volumes/DATA/logs/"))
+//  }
 
   test("Check scan and not find anything") {
     assert(EDLwithFiles == fromScan (EDLwithFiles))
@@ -59,20 +59,18 @@ class CheckerTest extends FunSuite {
   }
 
   test("Check scan, check logs and find all") {
-    val expected = "\nNOT FOUND [A001C022_140704_R547, A106R3J0, A126C003_150513_R3J0]" +
-      "\nFOUND IN LOGS {2 inside.txt=[A106R3J0, A001C022_140704_R547, A126C003_150513_R3J0]," +
-      " 2 tree.txt=[A106R3J0, A126C003_150513_R3J0]," +
-      " 2 inside tree.txt=[A106R3J0, A001C022_140704_R547, A126C003_150513_R3J0]}" +
-      "\nNOT FOUND AT ALL []"
+    val expected = "\nNOT FOUND \n[A001C022_140704_R547, A106R3J0, A126C003_150513_R3J0]\n\n\nFOUND IN LOGS " +
+      "\n[\n2 inside.txt   |---->   [A106R3J0, A001C022_140704_R547, A126C003_150513_R3J0], \n2 tree.txt   " +
+      "|---->   [A106R3J0, A126C003_150513_R3J0], \n2 inside tree.txt   |---->   [A106R3J0, A001C022_140704_R547," +
+      " A126C003_150513_R3J0]]\n\n\nNOT FOUND AT ALL \n[]\n\n"
     assert(expected == fromScanLogs (EDLwithFiles))
   }
 
   test("Check scan, check logs and not find EXPECTED") {
-    val expected = "\nNOT FOUND [EXPECTED, A001C022_140704_R547, A106R3J0, A126C003_150513_R3J0]" +
-      "\nFOUND IN LOGS {2 inside.txt=[A106R3J0, A001C022_140704_R547, A126C003_150513_R3J0]," +
-      " 2 tree.txt=[A106R3J0, A126C003_150513_R3J0]," +
-      " 2 inside tree.txt=[A106R3J0, A001C022_140704_R547, A126C003_150513_R3J0]}" +
-      "\nNOT FOUND AT ALL [EXPECTED]"
+    val expected = "\nNOT FOUND \n[EXPECTED, A001C022_140704_R547, A106R3J0, A126C003_150513_R3J0]\n\n\n" +
+      "FOUND IN LOGS \n[\n2 inside.txt   |---->   [A106R3J0, A001C022_140704_R547, A126C003_150513_R3J0]," +
+      " \n2 tree.txt   |---->   [A106R3J0, A126C003_150513_R3J0], \n2 inside tree.txt   |---->   " +
+      "[A106R3J0, A001C022_140704_R547, A126C003_150513_R3J0]]\n\n\nNOT FOUND AT ALL \n[EXPECTED]\n\n"
     assert(expected == fromScanLogs ("EXPECTED" :: EDLwithFiles))
   }
 

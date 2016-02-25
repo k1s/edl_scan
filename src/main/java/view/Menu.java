@@ -28,9 +28,10 @@ public class Menu {
                     "folder from EDL and shows not founded from logs");
             System.out.println();
             System.out.println("You can add options to the end of query:");
-            System.out.printf("usereels – also search for reel names");
+            System.out.printf("\nusereels – also search for reel names\n");
+            System.out.printf("\nusefiles – just get lines from file\n");
             System.out.printf("\nfindfiles – search for distinct files names; be careful and dont use it " +
-                    "with large sequences like from ARRI\n");
+                    "with large sequences like from ARRI\n\n");
             System.exit(-1);
         }
 

@@ -13,6 +13,7 @@ public class Runner {
     private Checker checker;
     private boolean useReelNames;
     private boolean findFiles;
+    private boolean useLines;
     private String EDL;
     private List<String> EDLstrings;
 
@@ -21,13 +22,15 @@ public class Runner {
         this.args = args;
         this.useReelNames = args.stream()
                 .anyMatch(s -> s.equals("usereels"));
+        this.useLines = args.stream()
+                .anyMatch(s -> s.equals("uselines"));
         this.findFiles = args.stream()
                 .anyMatch(s -> s.equals("findfiles"));
         this.args = args;
         this.EDL = args.get(1);
         Assert.requirePath(Paths.get(this.EDL));
         EDL input = new EDL(Paths.get(this.EDL));
-        this.EDLstrings = input.getInput(this.useReelNames);
+        this.EDLstrings = input.getInput(this.useReelNames, this.useLines);
         Assert.require(!this.EDLstrings.isEmpty(), "Cannot extract something from EDL");
     }
 
@@ -79,7 +82,10 @@ public class Runner {
     private void checkScanRun() {
         String source = this.args.get(2);
         List<String> strs = checker.checkScan(this.EDLstrings, source);
-        System.out.println("NOT FOUND IN SCAN   " + strs);
+        if (strs.isEmpty())
+            System.out.println("ALL OK");
+        else
+            System.out.println("NOT FOUND IN SCAN   " + strs);
     }
 
     private void checkScanLogsRun() {
@@ -98,7 +104,7 @@ public class Runner {
 
     private List<String> getSources(final List<String> args) {
         List<String> sourcesWithoutParams = args.stream()
-                                            .filter(s -> !(s.equals("usereels") | s.equals("findfiles")))
+                                            .filter(s -> !(s.equals("usereels") | s.equals("findfiles") | s.equals("uselines")))
                                             .collect(Collectors.toList());
         return sourcesWithoutParams.subList(3, sourcesWithoutParams.size());
     }
